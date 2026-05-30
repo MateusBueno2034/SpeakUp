@@ -23,26 +23,34 @@ export function AdminDashboard() {
     reports.reduce<Record<string, number>>((acc, r) => { acc[r.district] = (acc[r.district] || 0) + 1; return acc; }, {})
   ).map(([name, value]) => ({ name, value }));
   
-  // Tendência mais realista baseada na distribuição de dados
-  const trend = [
-    { name: "27-31 maio", v: Math.floor(reports.filter(r => new Date(r.createdAt) >= new Date("2026-05-27")).length) || 14 },
-    { name: "20-26 maio", v: 18 },
-    { name: "13-19 maio", v: 22 },
-    { name: "06-12 maio", v: 19 },
-    { name: "29 abr-05 mai", v: 16 },
-    { name: "22-28 abr", v: 12 },
-    { name: "15-21 abr", v: 8 },
-  ];
-  
-  // Tempo médio mais realista
-  const resolvidas = reports.filter(r => r.status === "resolvida");
-  const avgTime = resolvidas.length > 0 
-    ? Math.round(resolvidas.reduce((sum, r) => {
+  const buckets = Array.from({ length: 6 }, (_, index) => {
+    const end = new Date();
+    end.setDate(end.getDate() - index * 7);
+    const start = new Date(end);
+    start.setDate(start.getDate() - 6);
+    return {
+      name: `${start.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })} - ${end.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}`,
+      start,
+      end,
+    };
+  }).reverse();
+
+  const trend = buckets.map((bucket) => ({
+    name: bucket.name,
+    v: reports.filter((r) => {
+      const created = new Date(r.createdAt);
+      return created >= bucket.start && created <= bucket.end;
+    }).length,
+  }));
+
+  const resolvidas = reports.filter((r) => r.status === "resolvida");
+  const avgTime = resolvidas.length > 0
+    ? `${Math.round(resolvidas.reduce((sum, r) => {
         const created = new Date(r.createdAt);
         const updated = new Date(r.updatedAt);
         return sum + (updated.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
-      }, 0) / resolvidas.length * 10) / 10 + " dias"
-    : "4,1 dias";
+      }, 0) / resolvidas.length * 10) / 10} dias`
+    : "0 dias";
 
   const recent = [...reports].sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)).slice(0, 6);
 
@@ -132,16 +140,22 @@ export function AdminDashboard() {
             <Button variant="outline" size="sm" onClick={() => navigate({ name: "admin-reports" })}>Ver todas <ArrowUpRight className="w-3.5 h-3.5 ml-1" /></Button>
           </div>
           <ul className="divide-y divide-neutral-100">
-            {recent.map((r) => (
-              <li key={r.id} className="px-5 py-3 hover:bg-neutral-50 cursor-pointer flex items-center justify-between gap-3" onClick={() => navigate({ name: "admin-detail", id: r.id })}>
-                <div className="min-w-0">
-                  <div className="text-xs text-neutral-500 font-mono">{r.protocol}</div>
-                  <div className="truncate" style={{ fontWeight: 500 }}>{r.title}</div>
-                  <div className="text-xs text-neutral-500">{r.authorName} · {r.district}</div>
-                </div>
-                <StatusBadge status={r.status} size="sm" />
+            {recent.length === 0 ? (
+              <li className="px-5 py-10 text-center text-sm text-neutral-500">
+                Nenhuma denúncia registrada ainda.
               </li>
-            ))}
+            ) : (
+              recent.map((r) => (
+                <li key={r.id} className="px-5 py-3 hover:bg-neutral-50 cursor-pointer flex items-center justify-between gap-3" onClick={() => navigate({ name: "admin-detail", id: r.id })}>
+                  <div className="min-w-0">
+                    <div className="text-xs text-neutral-500 font-mono">{r.protocol}</div>
+                    <div className="truncate" style={{ fontWeight: 500 }}>{r.title}</div>
+                    <div className="text-xs text-neutral-500">{r.authorName} · {r.district}</div>
+                  </div>
+                  <StatusBadge status={r.status} size="sm" />
+                </li>
+              ))
+            )}
           </ul>
         </div>
       </div>

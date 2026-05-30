@@ -1,10 +1,15 @@
 import { useStore } from "../lib/store";
 import { Brand } from "../components/Brand";
 import { Button } from "../components/ui/button";
-import { ArrowRight, Check, FileText, Search, Clock, ShieldCheck, BarChart3, MapPin, Users } from "lucide-react";
+import { useTheme } from "next-themes";
+import { ArrowRight, Check, FileText, Search, Clock, ShieldCheck, BarChart3, MapPin, Users, Moon, Sun } from "lucide-react";
 
 export function Landing() {
   const { reports, user, navigate } = useStore();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const currentTheme = theme === "system" ? resolvedTheme : theme;
+  const activeTheme = currentTheme || "light";
+  const nextTheme = activeTheme === "dark" ? "light" : "dark";
   const myReports = user ? reports.filter((r) => r.authorEmail === user.email) : [];
   const counts = {
     abertas: myReports.filter((r) => r.status === "recebida").length,
@@ -39,6 +44,14 @@ export function Landing() {
             <a href="#diferenciais" className="cursor-pointer hover:text-neutral-900 hover:underline">Diferenciais</a>
           </nav>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setTheme(nextTheme)}
+              className="inline-flex items-center gap-2 rounded-full border border-neutral-200 px-3 py-1 text-sm text-neutral-700 hover:text-neutral-900 transition-colors"
+            >
+              {activeTheme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {activeTheme === "dark" ? "Claro" : "Escuro"}
+            </button>
             <Button variant="ghost" onClick={() => navigate({ name: "login" })}>Entrar</Button>
             <Button onClick={() => navigate({ name: "register" })}>Criar conta</Button>
           </div>

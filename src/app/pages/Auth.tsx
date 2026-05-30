@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import { useStore } from "../lib/store";
 import { Brand } from "../components/Brand";
 import { Button } from "../components/ui/button";
@@ -6,7 +7,25 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Checkbox } from "../components/ui/checkbox";
 import { Alert, AlertDescription } from "../components/ui/alert";
-import { AlertCircle, ArrowLeft, CheckCircle2, Eye, EyeOff, Shield } from "lucide-react";
+import { AlertCircle, ArrowLeft, CheckCircle2, Eye, EyeOff, Shield, Moon, Sun } from "lucide-react";
+
+function ThemeToggle() {
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const currentTheme = theme === "system" ? resolvedTheme : theme;
+  const activeTheme = currentTheme || "light";
+  const nextTheme = activeTheme === "dark" ? "light" : "dark";
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(nextTheme)}
+      className="inline-flex items-center gap-2 rounded-full border border-neutral-200 px-3 py-1 text-sm text-neutral-700 hover:text-neutral-900 transition-colors"
+    >
+      {activeTheme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      {activeTheme === "dark" ? "Claro" : "Escuro"}
+    </button>
+  );
+}
 
 function AuthShell({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   const { navigate } = useStore();
@@ -39,7 +58,13 @@ function AuthShell({ title, subtitle, children }: { title: string; subtitle: str
         <div className="w-full max-w-sm">
           <div className="lg:hidden mb-6 flex items-center justify-between">
             <Brand />
-            <button onClick={() => navigate({ name: "landing" })} className="text-sm text-neutral-500"><ArrowLeft className="w-4 h-4 inline" /> Voltar</button>
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+              <button onClick={() => navigate({ name: "landing" })} className="text-sm text-neutral-500"><ArrowLeft className="w-4 h-4 inline" /> Voltar</button>
+            </div>
+          </div>
+          <div className="hidden lg:flex justify-end mb-6">
+            <ThemeToggle />
           </div>
           <h1 style={{ fontSize: 24, fontWeight: 600 }}>{title}</h1>
           <p className="text-sm text-neutral-600 mt-1.5">{subtitle}</p>

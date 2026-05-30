@@ -95,7 +95,9 @@ export function MapView({ adminMode = false }: { adminMode?: boolean }) {
               </Button>
             </>
           ) : (
-            <div className="text-sm text-neutral-500 text-center py-10">Selecione um ponto no mapa.</div>
+            <div className="text-sm text-neutral-500 text-center py-10">
+              {filtered.length === 0 ? "Nenhuma ocorrência cadastrada." : "Selecione um ponto no mapa."}
+            </div>
           )}
         </div>
       </div>

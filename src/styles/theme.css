@@ -225,4 +225,24 @@
   .dark .hover\:bg-neutral-900:hover {
     background-color: rgba(255, 255, 255, 0.08) !important;
   }
+
+  .dark .hover\:text-neutral-900:hover,
+  .dark .hover\:text-neutral-800:hover,
+  .dark .hover\:text-neutral-700:hover,
+  .dark .hover\:text-neutral-600:hover,
+  .dark .hover\:text-neutral-500:hover,
+  .dark .hover\:text-neutral-400:hover,
+  .dark .focus\:text-neutral-900:focus,
+  .dark .focus\:text-neutral-800:focus,
+  .dark .focus\:text-neutral-700:focus,
+  .dark .focus\:text-neutral-600:focus,
+  .dark .active\:text-neutral-900:active,
+  .dark .active\:text-neutral-800:active,
+  .dark .active\:text-neutral-700:active,
+  .dark .visited\:text-neutral-900:visited,
+  .dark .visited\:text-neutral-800:visited,
+  .dark .visited\:text-neutral-700:visited,
+  .dark .disabled\:text-neutral-400:disabled {
+    color: var(--foreground) !important;
+  }
 }

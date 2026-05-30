@@ -26,16 +26,17 @@ export function Dashboard() {
         <Button onClick={() => navigate({ name: "new-report" })}><FilePlus2 className="w-4 h-4 mr-2" /> Nova denúncia</Button>
       </div>
 
-      {/* Alerta importante */}
-      <div className="rounded-xl border border-neutral-200 bg-neutral-900 text-white p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="rounded-xl border border-neutral-200 bg-white p-5">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-md bg-white/10 grid place-items-center"><AlertTriangle className="w-4 h-4" /></div>
+          <div className="w-8 h-8 rounded-md bg-neutral-100 grid place-items-center"><AlertTriangle className="w-4 h-4 text-neutral-700" /></div>
           <div>
-            <div style={{ fontWeight: 500 }}>Sua denúncia SPK-2026-0148 está em andamento</div>
-            <div className="text-sm text-neutral-300 mt-0.5">A equipe de pavimentação programou o reparo. Verifique os detalhes para cronograma.</div>
+            <div style={{ fontWeight: 500 }}>Registre sua primeira denúncia</div>
+            <div className="text-sm text-neutral-500 mt-0.5">Acompanhe o processo desde a abertura até a solução. Todas as notificações aparecerão aqui.</div>
           </div>
         </div>
-        <Button variant="secondary" onClick={() => navigate({ name: "report-detail", id: "r1" })}>Ver detalhes</Button>
+        <div className="mt-4">
+          <Button variant="secondary" onClick={() => navigate({ name: "new-report" })}>Registrar denúncia</Button>
+        </div>
       </div>
 
       {/* Cards de contagem */}
@@ -100,16 +101,23 @@ export function Dashboard() {
               <div className="text-xs text-neutral-500">Atualizações sobre suas denúncias</div>
             </div>
             <ul className="divide-y divide-neutral-100">
-              {notifications.slice(0, 4).map((n) => (
-                <li key={n.id} className="px-5 py-3 flex items-start gap-2">
-                  <span className={`mt-1.5 w-1.5 h-1.5 rounded-full ${n.read ? "bg-neutral-300" : "bg-neutral-900"}`} />
-                  <div className="min-w-0">
-                    <div className="text-sm" style={{ fontWeight: 500 }}>{n.title}</div>
-                    <div className="text-xs text-neutral-600 truncate">{n.message}</div>
-                    <div className="text-[11px] text-neutral-400 mt-0.5">{new Date(n.date).toLocaleString("pt-BR")}</div>
-                  </div>
+              {notifications.length === 0 ? (
+                <li className="px-5 py-10 text-center text-sm text-neutral-500">
+                  <ClipboardList className="w-6 h-6 mx-auto mb-2 text-neutral-400" />
+                  Sem notificações no momento.
                 </li>
-              ))}
+              ) : (
+                notifications.slice(0, 4).map((n) => (
+                  <li key={n.id} className="px-5 py-3 flex items-start gap-2">
+                    <span className={`mt-1.5 w-1.5 h-1.5 rounded-full ${n.read ? "bg-neutral-300" : "bg-neutral-900"}`} />
+                    <div className="min-w-0">
+                      <div className="text-sm" style={{ fontWeight: 500 }}>{n.title}</div>
+                      <div className="text-xs text-neutral-600 truncate">{n.message}</div>
+                      <div className="text-[11px] text-neutral-400 mt-0.5">{new Date(n.date).toLocaleString("pt-BR")}</div>
+                    </div>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
 
