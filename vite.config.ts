@@ -31,7 +31,7 @@ export default defineConfig({
     },
   },
 
-  base: '/SpeakUp/',
+  base: process.env.VERCEL ? '/' : process.env.GITHUB_ACTIONS ? '/SpeakUp/' : '/',
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
