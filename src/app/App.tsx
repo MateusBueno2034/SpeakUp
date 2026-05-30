@@ -1,3 +1,4 @@
+import { ThemeProvider } from "next-themes";
 import { StoreProvider, useStore } from "./lib/store";
 import { AppShell } from "./components/AppShell";
 import { Landing } from "./pages/Landing";
@@ -43,9 +44,17 @@ function Router() {
 
 export default function App() {
   return (
-    <StoreProvider>
-      <Router />
-      <Toaster />
-    </StoreProvider>
+    <ThemeProvider
+      attribute="class"
+      enableSystem
+      defaultTheme="system"
+      storageKey="speakup-theme"
+      disableTransitionOnChange
+    >
+      <StoreProvider>
+        <Router />
+        <Toaster />
+      </StoreProvider>
+    </ThemeProvider>
   );
 }
